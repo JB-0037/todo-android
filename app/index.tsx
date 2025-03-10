@@ -1,3 +1,4 @@
+import { Stack } from "expo-router";
 import { useState } from "react";
 import { Keyboard, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 
@@ -15,6 +16,15 @@ export default function Index() {
 
   return (
     <View style={styles.main}>
+      <Stack.Screen
+        options={{
+          title: 'Accueil',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          }
+        }}
+      />
+
       <View style={styles.submitBlock}>
         <TextInput
           style={styles.input}
