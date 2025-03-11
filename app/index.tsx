@@ -1,6 +1,7 @@
 import { Stack } from "expo-router";
 import { useState } from "react";
-import { Keyboard, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { Image, Keyboard, Pressable, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 type Todo = {
   id: string;
@@ -24,42 +25,67 @@ export default function Index() {
     setTodos(todos.filter((todo) => todo.id !== id));
   }
 
+  function updateTodoStatus(id: string) {
+    setTodos(todos.map((todo) => todo.id === id ? { ...todo, isCompleted: !todo.isCompleted } : todo));
+  }
+
   return (
-    <View style={styles.main}>
-      <Stack.Screen
-        options={{
-          title: 'Accueil',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          }
-        }}
-      />
-
-      <View style={styles.submitBlock}>
-        <TextInput
-          style={styles.input}
-          onChangeText={(e: string) => setTodo(e)}
-          value={todo}
-          maxLength={50}
+    <SafeAreaProvider>
+      <SafeAreaView>
+        <StatusBar
+          animated={true}
+          backgroundColor={"black"}
         />
-        <Pressable style={styles.submit} onPress={addTodo}>
-          <Text>+</Text>
-        </Pressable>
-      </View>
 
-      <ScrollView style={styles.scrollview}>
-        <View style={styles.todos}>
-          {todos.map((todo) => (
-            <View style={styles.todo} key={todo.id}>
-              <Text >{todo.label}</Text>
-              <Pressable onPress={() => deleteTodo(todo.id)}>
-                <Text style={{ fontWeight: "bold" }}>X</Text>
-              </Pressable>
+        <View style={styles.main}>
+          <Stack.Screen
+            options={{
+              title: "Todo",
+              headerTitleStyle: {
+                fontWeight: 'bold',
+              }
+            }}
+            />
+
+          <View style={styles.submitBlock}>
+            <TextInput
+              style={styles.input}
+              onChangeText={(e: string) => setTodo(e)}
+              value={todo}
+              maxLength={50}
+              />
+            <Pressable style={styles.submit} onPress={addTodo}>
+              <Text style={{ fontWeight: "bold" }}>+</Text>
+            </Pressable>
+          </View>
+
+          <ScrollView style={styles.scrollview}>
+            <View style={styles.todos}>
+              {todos.map((todo) => (
+                <View style={styles.todo} key={todo.id}>
+                  <View style={{ display: "flex", flexDirection: "row", gap: 5, alignItems: "center" }}>
+                    {
+                      todo.isCompleted
+                      ? <TouchableOpacity onPress={() => updateTodoStatus(todo.id)}>
+                          <Image source={require("../assets/images/checkbox-checked.png")} style={{ width: 30, height: 30 }} />
+                        </TouchableOpacity>
+                        : <TouchableOpacity onPress={() => updateTodoStatus(todo.id)}>
+                          <Image source={require("../assets/images/checkbox-unchecked.png")} style={{ width: 30, height: 30 }} />
+                        </TouchableOpacity>
+                    }
+                    
+                    <Text style={todo.isCompleted ? styles.todoStrikedLable : {}}>{todo.label}</Text>
+                  </View>
+                  <Pressable onPress={() => deleteTodo(todo.id)}>
+                    <Text style={{ fontWeight: "bold" }}>X</Text>
+                  </Pressable>
+                </View>
+              ))}
             </View>
-          ))}
+          </ScrollView>
         </View>
-      </ScrollView>
-    </View>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
@@ -77,12 +103,18 @@ const styles = StyleSheet.create({
   },
   input: {
     borderColor: "black",
-    borderWidth: 1,
+    backgroundColor: "white",
+    borderWidth: 2,
     borderStyle: "solid",
+    borderRadius: 8,
     flex: 1
   },
   submit: {
-    backgroundColor: "lightblue",
+    backgroundColor: "white",
+    borderColor: "black",
+    borderWidth: 2,
+    borderStyle: "solid",
+    borderRadius: 8,
     width: 40,
     display: "flex",
     justifyContent: "center",
@@ -96,7 +128,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderColor: "black",
     backgroundColor: "white",
-    padding: 10
+    padding: 10,
+    alignItems: "center"
   },
   scrollview: {
     height: "90%",
@@ -105,5 +138,9 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     gap: 10
+  },
+  todoStrikedLable: {
+    textDecorationLine: "line-through",
+    color: "grey"
   }
 });
