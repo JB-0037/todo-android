@@ -53,9 +53,10 @@ export default function Index() {
               onChangeText={(e: string) => setTodo(e)}
               value={todo}
               maxLength={50}
+              
               />
             <Pressable style={styles.submit} onPress={addTodo}>
-              <Text style={{ fontWeight: "bold" }}>+</Text>
+              <Image source={require("../assets/images/plus.png")} style={{ width: 20, height: 20 }} />
             </Pressable>
           </View>
 
@@ -74,10 +75,12 @@ export default function Index() {
                         </TouchableOpacity>
                     }
                     
-                    <Text style={todo.isCompleted ? styles.todoStrikedLable : {}}>{todo.label}</Text>
+                    <Text style={todo.isCompleted ? styles.todoStrikedLabel : {
+                      width: 230
+                    }}>{todo.label}</Text>
                   </View>
-                  <Pressable onPress={() => deleteTodo(todo.id)}>
-                    <Text style={{ fontWeight: "bold" }}>X</Text>
+                  <Pressable onPress={() => deleteTodo(todo.id)} style={{ padding: 5 }}>
+                    <Image source={require("../assets/images/trash.png")} style={{ width: 30, height: 30 }} />
                   </Pressable>
                 </View>
               ))}
@@ -107,6 +110,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderStyle: "solid",
     borderRadius: 8,
+    height: 50,
     flex: 1
   },
   submit: {
@@ -115,7 +119,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderStyle: "solid",
     borderRadius: 8,
-    width: 40,
+    width: 50,
     display: "flex",
     justifyContent: "center",
     alignItems: "center"
@@ -139,8 +143,9 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     gap: 10
   },
-  todoStrikedLable: {
+  todoStrikedLabel: {
     textDecorationLine: "line-through",
-    color: "grey"
+    color: "#b0b0b0",
+    width: 230
   }
 });
